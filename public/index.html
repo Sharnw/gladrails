@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>GladRails Test</title>
+  <link rel="stylesheet" href="css/normalize.css" />
+  <link rel="stylesheet" href="css/foundation.min.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <script src="js/vendor/modernizr.js"></script>
+  <script src="js/vendor/jquery.js"></script>
+  <script src="js/foundation.min.js"></script>
+  <script src="js/foundation/foundation.reveal.js"></script>
+  <script src="js/vendor/underscore.min.js"></script>
+  <script src="js/vendor/backbone.min.js"></script>
+  <script src="js/vendor/moment.js"></script>
+  <script src="js/vendor/kinetic.min.js"></script>
+</head>
+<body>
+
+    <div class="contain-to-grid sticky">
+
+        <nav class="top-bar" id="menu_top" data-topbar>
+          <ul class="title-area">
+            <li class="name">
+              <h1><a href="/#/">GladRails</a></h1>
+            </li>
+            <li class="toggle-topbar menu-icon"><a href="#"></a></li>
+          </ul>
+        
+          <section class="top-bar-section" id="menu_dynamic">
+            <ul class="left">
+              <li class="divider"></li>
+              <li><a href="/#/news">News</a></li>
+              <li class="divider"></li>
+              <li><a href="/#/about">About</a></li>
+              <li class="divider"></li>
+              <li><a href="/#/contact">Contact</a></li>
+            </ul>
+            
+            <ul class="right">
+              <li><a href="/#/login">Login</a></li>
+              <li class="divider"></li>
+              <li><a href="/#/signup">Sign up</a></li>
+            </ul>
+            
+          </section>
+        </nav>
+    </div>
+    
+    <div class="row large-9 columns" id="message_content"></div>
+
+      <div id="page">
+
+          <div class="row" id="page_content_1">
+  
+          </div>
+  
+          <div class="row" id="page_content_2">
+  
+          </div>
+          
+          <div class="row" id="page_content_3"></div>
+      
+      </div>
+
+    <!-- REVEAL MODAL -->
+
+    <div id="modal_box" class="reveal-modal xlarge" data-reveal>
+      <a class="close-reveal-modal">&#215;</a>
+      <div class="content"></div>
+    </div>
+
+    <!-- TEMPLATES -->
+        
+    <!-- Static -->
+    <script id="home_tpl" type="text/x-template">
+        <div class="large-12 columns">
+            <h2>Welcome to GladRails</h2>
+            <a class="button small secondary" href="/#/login">Have an account? Login</a>
+            <a class="button small secondary" href="/#/signup">Don't have an account? Sign Up!</a>
+        </div>
+    </script>
+        
+    <script id="news_tpl" type="text/x-template">
+      <div class="large-8 columns">
+        <h3>News</h3>
+      </div>
+    </script>
+    
+    <script id="about_tpl" type="text/x-template">
+        <div class="large-12 columns">
+            <h3>About</h3>
+        </div>
+    </script>
+    
+    <script id="contact_tpl" type="text/x-template">
+        <div class="large-12 columns">
+            <h3>Contact</h3>
+        </div>
+    </script>
+        
+        <!-- Auth -->
+    <script id="login_tpl" type="text/x-template">
+        <div class="small-11 small-centered columns">
+            <form accept-charset="UTF-8" class="login" id="login_form" method="post">
+                <fieldset>
+                    <legend>Login</legend>
+                    <div class="row">
+                      <div class="large-12 columns">
+                        <label>Username</label>
+                        <input type="text" name="account[username]" />
+                      </div>
+                    </div>
+                    <div class="row">
+                        <div class="large-4 columns">
+                            <label>Password</label>
+                            <input type="password" name="account[password]" />
+                        </div>
+                    </div>
+                    <span class="button" id="btn-login">Login</span>
+                </fieldset
+            </form>
+        </div>
+    </script>
+    
+    <script id="signup_tpl" type="text/x-template">
+        <div class="small-11 small-centered columns">
+            <form accept-charset="UTF-8" class="new_account" id="sign_up_form" method="post">
+                <fieldset>
+                    <legend>Sign Up</legend>
+                    <div class="row">
+                      <div class="large-12 columns">
+                        <label>Username</label>
+                        <input type="text" name="account[username]" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="large-12 columns">
+                        <label>House Name</label>
+                        <input type="text" name="account[account_name]" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="large-4 columns">
+                        <label>Password</label>
+                        <input type="password" name="account[password]" />
+                      </div>
+                      <div class="large-4 columns">
+                        <label>Confirm</label>
+                        <input type="text" name="account[password_confirmation]"/>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="large-4 columns">
+                        <label>Email</label>
+                        <input type="text" name="account[email]" placeholder="master@ludus.com" />
+                      </div>
+                      <div class="large-4 columns">
+                        <label>Confirm</label>
+                        <input type="text" name="account[email_confirmation]" placeholder="master@ludus.com" />
+                      </div>
+                    </div>
+                    <input class="button" name="commit" type="button" id="btn-create-account" value="Create Account" />
+                </fieldset>
+            </form>
+        </div>
+    </script>
+    
+    <script id="alert_message_tpl" type="text/x-template">
+        <div data-alert class="alert-box <%= status %>">
+          <%= message %>
+          <a href="javascript:void(0);" class="close">&times;</a>
+        </div>
+    </script>
+
+    <script id="alert_message_list_tpl" type="text/x-template">
+        <% _.each(messages, function(message, key) { %>
+            <div data-alert class="alert-box <%= status %>">
+                <%= key %>:&nbsp;
+                <%= message.join(', ') %>
+                <a href="javascript:void(0);" class="close">&times;</a>
+            </div>
+        <% }); %>
+    </script>
+    
+    <!-- Menu -->
+    
+    <script id="account_menu_tpl" type="text/x-template">
+        <ul class="left">
+          <li class="divider"></li>
+          <li data-page="ludus"><a href="/#/ludus">Ludus</a></li>
+          <li class="divider"></li>
+          <li data-page="arena"><a href="/#/arena">Arena</a></li>
+        </ul>
+        
+        <ul class="right">
+            <li class="divider"></li>
+            <li data-page="account"><a href="/#/account/edit">Account</a></li>
+            <li class="has-dropdown" data-page="home"><a href="/#/">Home</a>
+                <ul class="dropdown">
+                    <li data-page="home"><a href="/#/">News</a></li>
+                    <li><a href="/#/about">About</a></li>
+                    <li><a href="/#/contact">Contact</a></li>
+                </ul>
+            </li>
+                        
+            <li class="divider"></li>
+            <li><a href="/#/logout">Logout</a></li>
+        </ul>
+    </script>
+    
+    <script id="public_menu_tpl" type="text/x-template">
+        <ul class="left">
+          <li class="divider"></li>
+          <li class="active"><a href="/#/news">News</a></li>
+          <li class="divider"></li>
+          <li><a href="/#/about">About</a></li>
+          <li class="divider"></li>
+          <li><a href="/#/contact">Contact</a></li>
+        </ul>
+        
+        <ul class="right">
+          <li><a href="/#/login">Login</a></li>
+          <li class="divider"></li>
+          <li><a href="/#/signup">Sign up</a></li>
+        </ul>
+    </script>
+    
+    <!-- Account -->
+    <script id="account_shell_tpl" type="text/x-template">
+      <dl class="accordion" data-accordion>
+        <dd>
+          <a href="/#/account/summary" data-route="account/summary" class="section-link">Account (<strong><%= App.username %></strong>)</a>
+          <div id="account_summary" class="content <% if (current_sub=='summary'){%>active<%}%>" data-sub_id="summary"></div>
+        </dd>
+        <dd>
+          <a href="/#/account/notifications" data-route="account/notifications" class="section-link">Notifications</a>
+          <div id="account_notifications" class="content <% if (current_sub=='notifications'){%>active<%}%>" data-sub_id="notifications"></div>
+        </dd>
+        <dd>
+          <a href="/#/account/settings" data-route="account/settings" class="section-link">Settings</a>
+          <div id="account_settings" class="content <% if (current_sub=='settings'){%>active<%}%>" data-sub_id="settings"></div>
+        </dd>
+      </dl>
+    </script>
+    
+    <script id="account_summary_tpl" type="text/x-template">
+        <table>
+            <tr>
+                <th>House Name:</th>
+                <td colspan="2"><%= account_name %></td>
+            </tr>
+            <tr>
+                <th>Coinage:</th>
+                <td colspan="2"><%= currency %></td>
+            </tr>
+            <tr>
+                <th>Glory:</th>
+                <td colspan="2"><%= glory %></td>
+            </tr>
+            <tr>
+                <th>Gladiators in Ludus:</th>
+                <td><%= ga_count %></td>
+                <td><% if (ga_count == 0) {%><a class="button tiny table-fit" href="/#/ludus/recruits">Recruit</a><% } %></td>
+            </tr>
+            <tr>
+                <th>Gladiators lost:</th>
+                <td colspan="2"><%= gd_count %></td>
+            </tr>
+        </table>
+    </script>
+    
+    <script id="ludus_shell_tpl" type="text/x-template">
+      <dl class="accordion" data-accordion>
+        <dd>
+          <a href="/#/ludus/summary" data-route="ludus/summary" class="section-link">Summary</a>
+          <div id="ludus_summary" class="content <% if (current_sub=='summary'){%>active<%}%>" data-sub_id="summary"></div>
+        </dd>
+        <dd>
+          <a href="/#/ludus/roster" data-route="ludus/roster" class="section-link">Roster (<span class="roster_count">0</span>)</a>
+          <div id="ludus_roster" class="content <% if (current_sub=='roster'){%>active<%}%>" data-sub_id="roster"></div>
+        </dd>
+        <dd>
+          <a href="/#/ludus/recruits" data-route="ludus/recruits" class="section-link">Recruits (<span class="recruit_count">0</span>)</a>
+          <div id="ludus_recruits" class="content <% if (current_sub=='recruits'){%>active<%}%>" data-sub_id="recruits"></div>
+        </dd>
+        <dd>
+          <a href="/#/ludus/history" data-route="ludus/history" class="section-link">History</a>
+          <div id="ludus_history" class="content <% if (current_sub=='history'){%>active<%}%>" data-sub_id="history"></div>
+        </dd>
+      </dl>
+    </script>
+    
+    <script id="account_ludus_summary_tpl" type="text/x-template">
+        <table>
+            <tr>
+                <th>Gladiators:</th>
+                <td><%= g_count %></td>
+            </tr>
+            <tr>
+                <th>Recruits:</th>
+                <td><%= r_count %></td>
+            </tr>
+            <tr>
+                <th>Next Recruits:</th>
+                <td><%= h_time_until(ms_until_recruit) %></td>
+            </tr>
+        </table>
+    </script>
+    
+    <script id="account_ludus_roster_tpl" type="text/x-handlebars-template">
+        <% if (!_.isEmpty(collection.models)) { %>
+        <table id="char_list">
+            <thead>
+                <th>Name</th>
+                <th>Level</th>
+                <th>Exp</th>
+                <th>Wins</th>
+                <th>Losses</th>
+            </thead>
+            <tbody class="collection">
+                <% collection.each(function(c) {
+                    var char = c.attributes;
+                %>
+                    <tr>
+                        <td class="fill-link"><a href="/#/ludus/roster" class="btn-view-char name_up" data-char_id="<%= char.id %>"><%= char.name %></a></td>
+                        <td class="fill-link"><a href="/#/ludus/roster" class="btn-view-char" data-char_id="<%= char.id %>"><%= char.level %></a></td>
+                        <td class="fill-link"><a href="/#/ludus/roster" class="btn-view-char" data-char_id="<%= char.id %>"><%= char.exp %></a></td>
+                        <td class="fill-link"><a href="/#/ludus/roster" class="btn-view-char" data-char_id="<%= char.id %>"><%= char.wins %></a></td>
+                        <td class="fill-link"><a href="/#/ludus/roster" class="btn-view-char" data-char_id="<%= char.id %>"><%= char.losses %></a></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <div class="char-screen"></div>
+        <div class="action-screen"></div>
+        <% } else { %>
+            <p>You have no gladiators in your ludus. Visit the recruiting station to purchase some gladiators.</p>
+            
+            <p><a class="button" href="/#/ludus/recruits">To Recruits</a></p>
+        <% } %>
+    </script>
+    
+    <script id="account_ludus_recruits_tpl" type="text/x-handlebars-template">
+        <% if (!_.isEmpty(collection.models)) { %>
+          <table id="recruit_list">
+              <thead>
+                  <th>Name</th>
+                  <th>Str</th>
+                  <th>Agi</th>
+                  <th>End</th>
+                  <th>Int</th>
+                  <th>X</th>
+                  <th>Traits</th>
+              </thead>
+              <tbody>
+                  <% collection.each(function(r) {
+                      var recruit = r.attributes;
+                  %>
+                      <tr data-recruit_id="<%= recruit.id %>">
+                          <td><%= recruit.name %></td>
+                          <td><%= recruit.str %></td>
+                          <td><%= recruit.agi %></td>
+                          <td><%= recruit.end %></td>
+                          <td><%= recruit.int %></td>
+                          <td><%= recruit.x %></td>
+                          <td><%= recruit.trait %></td>
+                      </tr>
+                      <tr data-recruit_id="<%= recruit.id %>">
+                          <td colspan="7">
+                              <ul class="button-group even-2">
+                                  <li><button class="button secondary btn-buy-recruit" data-recruit_id="<%= recruit.id %>">Recruit (<%= recruit.price %>)</button></li>
+                                  <li><button class="button alert btn-reject-recruit" data-recruit_id="<%= recruit.id %>">Reject</button></li>
+                              </ul>
+                          </td>
+                      </tr>
+                  <% }); %>
+                  </tbody>
+              </table>
+        <% } else { %>
+            <p>There are no recruits available. You must wait for your recruiters to return to the ludus.</p>
+            
+            <p><a class="button" href="/#/ludus/roster">To Roster</a></p>
+        <% } %>
+        </script>
+        
+        <script id="account_ludus_history_tpl" type="text/x-handlebars-template">
+            <% if(chars.length > 0) { %>
+                <h3>Fallen Gladiators</h3>
+                <table>
+                    <thead>
+                        <th>Name</th>
+                        <th>Level</th>
+                        <th>Exp</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Strength</th>
+                        <th>Agility</th>
+                        <th>Endurance</th>
+                        <th>Chaos</th>
+                    </thead>
+                    <tbody>
+                        <% _.each(chars, function(char) { %>
+                            <tr>
+                                <td><%= char.name %></td>
+                                <td><%= char.level %></td>
+                                <td><%= char.exp %></td>
+                                <td><%= char.wins %></td>
+                                <td><%= char.losses %></td>
+                                <td><%= char.base_str %></td>
+                                <td><%= char.base_agi %></td>
+                                <td><%= char.base_end %></td>
+                                <td><%= char.base_x %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No gladiators have given their lives for the glory of your ludus. Either just you're that good, or you haven't spent much time at the arena.</p>
+                
+                <p><a class="button" href="/#/arena">To Arena</a></p>
+            <% } %>
+            
+            <!-- <h3>Accomplishments</h3> -->
+        </script>
+        
+        <script id="view_char_details_tpl" type="text/x-template">
+            <h3><%= name %></h3>
+                
+              <ul class="button-group">
+                <li><button class="btn-edit-char small button secondary" data-char_id="<%= id %>">Customize</button></li>
+                <li><button class="btn-random-bout small button success" data-char_id="<%= id %>">Exhibition</button></li>
+                <li><button class="btn-find-spar small button" data-char_id="<%= id %>">Find Spar</button></li>
+                <li><button class="btn-pits small button alert" data-char_id="<%= id %>">To Pits</button></li>
+              </ul>
+                
+                <div class="row display">
+                      <div class="small-8 large-8 columns">
+                            <table>
+                                <tr>
+                                    <th>Status</th>
+                                    <td id="char_status"><%= status %></td>
+                                </tr>
+                                <tr>
+                                    <th>Recovery Time:</th>
+                                    <td>
+                                        <span id="recovery_time">
+                                            <span id="recovery_time_text"><%= h_time_until(recovery_time_ms) %></span>
+                                        <span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Wins</th>
+                                    <td><%= wins %></td>
+                                </tr>
+                                <tr>
+                                    <th>Losses</th>
+                                    <td><%= losses %></td>
+                                </tr>
+                                <tr>
+                                    <th>Weapon</th>
+                                    <td><%= weapon %></td>
+                                </tr>
+                                <tr>
+                                    <th>Armour</th>
+                                    <td><%= armour %></td>
+                                </tr>
+                                <tr>
+                                    <th>Traits</th>
+                                    <td>
+                                        <% _.each(traits, function(trait) { %>
+                                            <%= trait.description %>
+                                        <% }); %>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Conditions</th>
+                                    <td>
+                                        <% _.each(conditions, function(condition) { %>
+                                            <%= condition.description %>
+                                            <% if (condition.expires_ms) { %> (Healed <%= h_time_ago(expires_ms) %>)<% } %><br />
+                                        <% }); %>
+                                    </td>
+                                </tr>
+                            </table>
+                      </div>
+                    <div class="small-4 large-4 columns">
+                        <table>
+                            <legend>Attributes</legend>
+                            <tr>
+                                <th>Strength</th><td><%= h_att_colour(base_str, str) %></td>
+                            </tr>
+                            <tr>
+                                <th>Agility</th><td><%= h_att_colour(base_agi, agi) %></td>
+                            </tr>
+                            <tr>
+                                <th>Endurance</th><td><%= h_att_colour(base_end, end) %></td>
+                            </tr>
+                            <tr>
+                                <th>Chaos</th><td><%= h_att_colour(base_x, x) %></td>
+                            </tr>
+                            <tr>
+                                <th>Intimidate</th><td><%= h_att_colour(intimidate, x) %></td>
+                            </tr>
+                            <tr>
+                                <th>Discipline</th><td><%= h_att_colour(discipline, x) %></td>
+                            </tr>
+                            <tr>
+                                <th>Judgement</th><td><%= h_att_colour(judgement, x) %></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </script>
+        
+        <script id="edit_char_details_tpl" type="text/x-template">
+                <h3><%= name %></h3>
+                
+                <div class="row">
+                    <div class="small-10 large-10 columns">
+                        <button class="button small round alert btn-hide-action" data-target=".char-screen">Back</button>
+                    </div>
+                </div>
+                
+                <form accept-charset="UTF-8" id="customize_form" method="post" class="custom">
+                    <fieldset>
+                        <legend>Customize <%= char.name %></legend>
+                        <input type="hidden" name="char_id" value="<%= char.id %>" />
+                        
+                       <div class="row">
+                          <div class="small-10 large-10 columns">
+                            <label>Name</label>
+                            <input name="name" size="30" type="text" value="<%= char.name %>" />
+                          </div>
+                        </div> 
+                        
+                       <div class="row">
+                          <div class="small-10 large-10 columns">
+                            <label>Weapon</label>
+                            <select name="weapon_id" class="medium">
+                                <% _.each(equipment.weap_store, function(weap) { %>
+                                    <option value="<%= weap.id %>" <%= weap.is_selected %>><%= weap.name %> (<%= weap.w_type %>)</option>
+                                <% }); %>
+                            </select>
+                          </div>
+                        </div>
+                        
+                       <div class="row">
+                          <div class="small-10 large-10 columns">
+                            <label>Armour</label>
+                            <select name="armour_id" class="medium">
+                                <% _.each(equipment.arm_store, function(arm) { %>
+                                    <option value="<%= arm.id %>" <%= arm.is_selected %>><%= arm.name %> (<%= arm.a_type %>)</option>
+                                <% }); %>
+                            </select>
+                          </div>
+                        </div>
+                    </fieldset>
+                    
+                    <div class="row">
+                        <div class="small-10 large-10 columns">
+                            <span class="button small round" id="btn-save-char">Save Changes</span>
+                        </div>
+                    </div>
+                </form>
+        </script>
+    
+    <script id="arena_shell_tpl" type="text/x-template">
+        <dl class="accordion" data-accordion>
+          <dd>
+            <a href="/#/arena/summary" data-route="arena/summary" class="section-link">Summary</a>
+            <div id="arena_summary" class="content <% if (current_sub=='summary'){%>active<%}%>" data-sub_id="summary"></div>
+          </dd>
+          <dd>
+            <a href="/#/arena/watch" data-route="arena/watch" class="section-link">Watch</a>
+            <div id="arena_watch" class="content <% if (current_sub=='watch'){%>active<%}%>" data-sub_id="watch"></div>
+          </dd>
+          <dd>
+            <a href="/#/arena/games" data-route="arena/games" class="section-link">Exhibition</a>
+            <div id="arena_games" class="content <% if (current_sub=='games'){%>active<%}%>" data-sub_id="games"></div>
+          </dd>
+          <dd>
+            <a href="/#/arena/tourney" data-route="arena/tourney" class="section-link">Tourney</a>
+            <div id="arena_tourney" class="content <% if (current_sub=='tourney'){%>active<%}%>" data-sub_id="tourney"></div>
+          </dd>
+        </dl>
+    </script>
+    
+    <script id="account_arena_summary_tpl" type="text/x-template">
+        <h3>Tourneys entered</h3>
+        <table>
+            <tbody>
+                <% _.each(chars_registered, function(reg) { %>
+                    <tr><td><%= reg.tourney %> (<%= reg.name %>)</td></tr>
+                <% }); %>
+            </tbody>
+        </table>
+        
+        <h4>My Recent Bouts</h4>
+        <table>
+            <tbody>
+                <% _.each(recent_bouts, function(notification) { %>
+                    <tr><td><%= notification.subject %></td><td><a class="button small secondary" href="/#/arena/watch/<%= notification.link_hash %>">Watch</a></td></tr>
+                <% }); %> 
+            </tbody>
+        </table>
+    </script>
+    
+    <script id="account_arena_watch_tpl" type="text/x-template">
+        <h3>Recent Bouts</h3>
+        <table>
+            <tbody>
+                <% _.each(recent_bouts, function(notification) { %>
+                    <tr><td><%= notification.subject %></td><td><a class="button small secondary" href="/#/arena/watch/<%= notification.link_hash %>">Watch</a></td></tr>
+                <% }); %> 
+            </tbody>
+        </table>
+    </script>
+    
+    <script id="account_arena_games_tpl" type="text/x-template">
+        <h4>Eligible Gladiators</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th><th>Level</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </script>
+    
+    <script id="spar_list_tpl" type="text/x-handlebars-template">
+          <h4>Eligible Sparring Partners</h4>
+          <table class="character_list">
+              <thead>
+                  <tr>
+                      <th>Gladiator</th><th>Best Att</th><th>Equipment</th><th></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <% _.each(chars, function(char) { %>
+                          <tr>
+                              <td><span class="label radius diff_<%= char.diff %>"  data-tooltip class="has-tip" title="<%= char.account_name %>"><%= char.name %></span></td>
+                              <td><%= char.best_stat %></td>
+                              <td data-tooltip class="has-tip" title="<%= char.armour.desc %> / <%= char.weapon.desc %>" ><%= char.armour.type %> / <%= char.weapon.type %></td>
+                              <td width="50">
+                                  <button class="button small secondary btn-spar-bout" data-char_1_id="<%= my_char.id %>" data-char_2_id="<%= char.id %>">Spar</button>
+                              </td>
+                          </tr>
+                  <% }); %> 
+              </tbody>
+          </table>
+    </script>
+    
+    <script id="account_arena_tourney_tpl" type="text/x-template">
+        <div class="small-12 large-12 small-centered large-centered columns">
+            <h2>Enter tourney</h2>
+            
+            <h4>Current Tourneys</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th><th>Next</th><th>Entries</th><th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% _.each(tourneys, function(tourney) { %>
+                        <tr>
+                          <td><%= tourney.name %> (<%= tourney.type %>)</td><td><%= h_time_until(tourney.next) %></td><td width="50"><%= tourney.num_entries %></td>
+                          <td width="50">
+                            <button class="btn-show-tourney small primary button" data-tourney_id="<%= tourney.id %>">Show</button>
+                          </td>
+                        </tr>
+                    <% }); %> 
+                </tbody>
+            </table>
+
+            <div class="action-screen"></div>
+        </div>
+    </script>
+
+    <!-- View tourney eligible -->
+
+    <script id="show_tourney_tpl" type="text/x-handlebars-template">
+        <div class="small-11 small-centered columns">
+            <div class="row">
+              <h4>Tourney Entrants</h4>
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Name</th><th>Ludus</th><th></th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <% _.each(entered_chars, function(c) { %>
+                          <tr>
+                            <td><%= c.name %></td>
+                            <td><%= c.ludus_name %></td>
+                            <td width="50">
+                              <% if (!c.is_mine) { %><button class="btn-attempt-spy small alert button" data-char_id="<%= c.id %>">Spy</button><% } %>
+                            </td>
+                          </tr>
+                      <% }); %> 
+                  </tbody>
+              </table>
+            </div>
+
+            <div class="row">
+              <h4>Eligible Gladiators</h4>
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Name</th><th></th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <% _.each(eligible_chars, function(c) { %>
+                          <tr>
+                            <td><%= c.name %></td>
+                            <td width="50">
+                              <button class="btn-enter-tourney small primary button" data-tourney_id="<%= tourney_id %>" data-char_id="<%= c.id %>">Enter</button>
+                            </td>
+                          </tr>
+                      <% }); %> 
+                  </tbody>
+              </table>
+            </div>
+        </div>
+    </script>
+
+    <!-- spy tourney entrant -->
+
+    <script id="spy_results_tpl" type="text/x-handlebars-template">
+        <div class="small-11 large-11 columns">
+            <div class="row">
+              <div class="panel callout">
+                <p>Risking life and limb, your spy infiltrates the ludus on <%=char.name %> and observes him during training.</p>
+              </div>
+            </div>
+            <div class="row">
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Name</th><th>Best Stat</th><th>Equipment</th><th>Wins</th><th>Losses</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                        <td><%= char.name %></td>
+                        <td><%= char.best_stat %></td>
+                          <td data-tooltip class="has-tip" title="<%= char.armour.desc %> / <%= char.weapon.desc %>" ><%= char.armour.type %> / <%= char.weapon.type %></td>
+                        <td><%= char.wins %></td>
+                        <td><%= char.losses %></td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+        </div>
+    </script>
+
+    <!-- View bout -->
+    <script id="bout_results_tpl" type="text/x-handlebars-template">
+        <button class="button small round alert btn-hide-action" data-target="char-screen">Back</button>
+        <div class="small-11 small-centered columns">
+            <div class="row">
+                <div id="canvas_container"></div>
+            </div>
+            <div class="row">
+                <div id="log"></div>
+            </div>
+        </div>
+    </script>
+    
+    <!-- Notifications -->
+    <script id="account_notifications_tpl" type="text/x-template">
+        <div class="small-10 large-10 large-centered small-centered columns">
+            <div class="row">
+                <p>
+                    <span class="round label">Report</span>
+                    <span class="round alert label">Injury</span>
+                    <span class="round success label">Reward</span>
+                </p>
+            </div>
+            <div class="row">
+                <ul id="notification_list" class="simple-list">
+                    <% _.each(notifications, function(notification) { %>
+                        <li><a href="/#/account/notification/<%= notification.id %>"><%= notification.subject %></a></li>
+                    <% }); %> 
+                </ul>
+            </div>
+        </div>
+    </script>
+    
+    <script id="view_notification_tpl" type="text/x-template">
+        <div class="small-10 large-10 large-centered small-centered columns">
+            <b><p><%= subject %></b> (<%= created_at %>)</[>
+            <p><%= text %></p>
+        </div>
+    </script>
+    
+    <script id="view_bout_output_tpl" type="text/x-template">
+        <div class="small-10 large-10 large-centered small-centered columns" id="log">
+            <p class="panel"><%= text %></p>
+        </div>
+    </script>
+
+  <script>
+    $(document).foundation();
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>

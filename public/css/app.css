@@ -1,0 +1,86 @@
+/* VARIABLES */
+/* VARIABLES */
+/* BATTLE LOG MESSAGES */
+.msg_attack {
+  color: #B7D63A;
+}
+.msg_attack_special {
+  color: #9E89AD;
+}
+.msg_defense {
+  color: orange;
+}
+.msg_reward {
+  color: blue;
+}
+.msg_injury,
+.msg_death {
+  color: red;
+}
+.msg_faint {
+  color: #C9C9C9;
+}
+.msg_misc {
+  color: #7ba9b3;
+}
+/* ATT COLOURS */
+.att_green {
+  color: #88d669;
+}
+.att_red {
+  color: #d66969;
+}
+#log {
+  height: 250px;
+  overflow-y: scroll;
+}
+#char_action_content {
+  padding-bottom: 10px;
+}
+/* CUSTOM FORMATTING */
+#glad_heading {
+  background-color: #FFDE5C;
+}
+table tr td,
+th {
+  vertical-align: top;
+  text-align: left;
+  padding-right: 8px;
+}
+.modal-footer .btn {
+  float: left;
+}
+.bout_window {
+  height: 600px;
+}
+td.fill-link {
+  height: 100%;
+  padding: 0px !important;
+}
+td.fill-link a {
+  display: inline-block;
+  height: 46px;
+  width: 100%;
+  padding: 10px !important;
+}
+table.character_list td span.diff_1 {
+  background-color: #88d669;
+}
+table.character_list td span.diff_2 {
+  background-color: #d6d669;
+}
+table.character_list td span.diff_3 {
+  background-color: #d69669;
+}
+table.character_list td span.diff_4 {
+  background-color: #d66969;
+}
+#char_list {
+  width: 100%;
+}
+table tr.highlight_green td {
+  background-color: #88d669;
+}
+#modal .content {
+  overflow-y: scroll;
+}
